@@ -1,9 +1,10 @@
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import TableCart from "../components/Fragments/tableCart";
 import Navbar from '../components/Layouts/Navbar';
 import { DarkMode } from "../context/DarkMode";
 import FooterPage from "../components/Layouts/Footer";
+import { getProducts } from "../services/product.service";
 
 export const CartPage = () => {
     // eslint-disable-next-line no-unused-vars
@@ -11,6 +12,11 @@ export const CartPage = () => {
     const { isDarkMode } = useContext(DarkMode);
     useLogin();
 
+    useEffect(()=>{
+        getProducts((data)=>{
+            setProducts(data);
+        })
+    })
 
     return (
         <Fragment>

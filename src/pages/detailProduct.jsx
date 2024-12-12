@@ -10,49 +10,50 @@ const DetailProductPage = () => {
   const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
+    // Fetch product detail with stock
     getDetailProduct(id, (data) => {
-      setProduct(data);
+      const cartItem = cart.find((item) => item.id === data.id);
+      const stock = 20 - (cartItem?.qty || 0); // Hitung stok berdasarkan jumlah yang sudah di dalam keranjang
+      setProduct({ ...data, stock: Math.max(stock, 0) }); // Pastikan stok tidak negatif
     });
-  }, [id]);
+  }, [id, cart]);
 
   const handleImageClick = () => {
     setIsZoomed(!isZoomed);
   };
 
-  // Check if the product category is either 'jewelery' or 'electronics'
   const isCategoryExcluded =
     product.category === "jewelery" || product.category === "electronics";
 
   const handleAddToCart = () => {
-    // Check if there is a token in localStorage (indicating the user is logged in)
     const token = localStorage.getItem("token");
 
     if (!token) {
-      // Redirect to login page if token is not present (not logged in)
       alert("Please login first!");
       navigate("/login");
       return;
     }
 
-    // Add product to the cart or update quantity if already in the cart
-    const updatedCart = [...cart]; // Copy cart state to prevent direct mutation
+    if (product.stock <= 0) {
+      alert("Stock is not sufficient!");
+      return;
+    }
+
+    const updatedCart = [...cart];
     const existingProduct = updatedCart.find((item) => item.id === product.id);
 
     if (existingProduct) {
-      // Increment quantity if the product is already in the cart
       existingProduct.qty += 1;
     } else {
-      // Add new product to the cart
       updatedCart.push({ id: product.id, qty: 1 });
     }
 
-    // Save updated cart to localStorage and update state
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    setCart(updatedCart); // Update cart state immediately
+    setCart(updatedCart);
 
     alert("Product successfully added to the cart!");
     navigate("/products");
-    window.location.reload();
+    window.location.reload()
   };
 
   return (
@@ -89,13 +90,20 @@ const DetailProductPage = () => {
               </div>
             </div>
 
+            <div className="text-sm font-medium mt-2">
+              {product.stock > 0 ? (
+                <span className="text-gray-500">Stock: {product.stock}</span>
+              ) : (
+                <span className="text-red-500">Out of Stock</span>
+              )}
+            </div>
+
             <div className="flex items-center mt-6 mb-4 pb-6 border-b border-gray-300">
               <div className="space-x-2 flex text-sm font-medium">
                 {product.description}
               </div>
             </div>
 
-            {/* Pilihan Ukuran - Kondisi untuk kategori Jewelery dan Electronics */}
             {!isCategoryExcluded && (
               <div className="flex items-center mt-6 mb-4 pb-6 border-b border-gray-300">
                 <div className="space-x-2 flex text-sm font-medium">
@@ -116,15 +124,15 @@ const DetailProductPage = () => {
               </div>
             )}
 
-            {/* Tombol Aksi */}
             <div className="flex space-x-4 mb-5 text-sm font-medium">
               <div className="flex-auto flex space-x-4 pr-4">
                 <button
                   className="flex-1 h-12 border border-gray-300 text-gray-700 rounded-lg shadow hover:bg-green-100 transition"
                   type="button"
-                  onClick={handleAddToCart} // Handle add to cart
+                  onClick={handleAddToCart}
+                  disabled={product.stock <= 0}
                 >
-                  Add to Cart
+                  {product.stock > 0 ? "Add to Cart" : "Unavailable"}
                 </button>
               </div>
               <button
@@ -147,7 +155,6 @@ const DetailProductPage = () => {
               </button>
             </div>
 
-            {/* Info Pengiriman */}
             <p className="text-sm text-gray-500">
               Free shipping on all continental US orders.
             </p>
@@ -155,7 +162,6 @@ const DetailProductPage = () => {
         </div>
       )}
 
-      {/* Overlay untuk Zoom */}
       {isZoomed && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"

@@ -99,7 +99,7 @@ const ProductPage = () => {
           </div>
 
           {/* Cart Section */}
-          <div className="flex items-center justify-center w-full mt-8">
+          <div className="flex items-center justify-center w-full mt-8 hidden">
             <div className="w-full max-w-4xl mx-5 mt-8">
               <h1 className={`text-3xl font-bold mb-4 text-center ${
                   isDarkMode ? "text-green-400" : "text-green-600"
