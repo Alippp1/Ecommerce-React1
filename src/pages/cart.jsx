@@ -1,6 +1,8 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
-import TableCart from "../components/Fragments/tableCart";
+import TableCart from '../components/Fragments/tableCart';
+
+
 import Navbar from '../components/Layouts/Navbar';
 import { DarkMode } from "../context/DarkMode";
 import FooterPage from "../components/Layouts/Footer";
