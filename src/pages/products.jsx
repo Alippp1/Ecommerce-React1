@@ -2,8 +2,7 @@ import { Fragment, useEffect, useState, useContext } from "react";
 import CardProducts from "../components/Fragments/CardProducts";
 import { getProducts } from "../services/product.service";
 import { useLogin } from "../hooks/useLogin";
-
-import TableCart from '../components/Fragments/tableCart';
+import TableCart from "../components/Fragments/TableCart";
 import Navbar from "../components/Layouts/Navbar";
 import FooterPage from "../components/Layouts/Footer";
 import { DarkMode } from "../context/DarkMode";

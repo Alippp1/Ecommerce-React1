@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
-import TableCart from '../components/Fragments/tableCart';
+import TableCart from "../components/Fragments/TableCart";
 
 
 import Navbar from '../components/Layouts/Navbar';
