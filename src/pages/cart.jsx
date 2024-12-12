@@ -5,9 +5,9 @@ import Navbar from '../components/Layouts/Navbar';
 import { DarkMode } from "../context/DarkMode";
 import FooterPage from "../components/Layouts/Footer";
 import { getProducts } from "../services/product.service";
+import { Link } from 'react-router-dom';
 
 export const CartPage = () => {
-    // eslint-disable-next-line no-unused-vars
     const [products, setProducts] = useState([]);
     const { isDarkMode } = useContext(DarkMode);
     useLogin();
@@ -34,6 +34,12 @@ export const CartPage = () => {
                             Cart
                         </h1>
                         <TableCart products={products} />
+                        <Link to="/products" className="inline-flex items-center space-x-2 transition-all duration-300 hover:space-x-4 hover:text-yellow-600">
+                            <span className="font-semibold text-lg text-yellow-500 hover:text-yellow-600 transition-colors duration-300">
+                                Back
+                            </span>
+                        </Link>
+
                     </div>
                 </div>
                 <FooterPage />
