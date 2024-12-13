@@ -6,15 +6,14 @@ const DetailProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState({});
-  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || []); // Track cart in state
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || []);
   const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
-    // Fetch product detail with stock
     getDetailProduct(id, (data) => {
       const cartItem = cart.find((item) => item.id === data.id);
-      const stock = 20 - (cartItem?.qty || 0); // Hitung stok berdasarkan jumlah yang sudah di dalam keranjang
-      setProduct({ ...data, stock: Math.max(stock, 0) }); // Pastikan stok tidak negatif
+      const stock = 20 - (cartItem?.qty || 0);
+      setProduct({ ...data, stock: Math.max(stock, 0) });
     });
   }, [id, cart]);
 
@@ -53,33 +52,33 @@ const DetailProductPage = () => {
 
     alert("Product successfully added to the cart!");
     navigate("/products");
-    window.location.reload()
+    window.location.reload();
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center bg-gray-50">
+    <div className="w-full min-h-screen flex justify-center items-center bg-gray-50 px-4 sm:px-8">
       {Object.keys(product).length > 0 && (
-        <div className="flex font-serif max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="flex flex-col sm:flex-row font-serif max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Gambar Produk */}
           <div
-            className={`flex-none w-72 relative transition-transform duration-300 ${
+            className={`flex-none w-full sm:w-72 relative transition-transform duration-300 ${
               isZoomed ? "scale-110" : ""
             }`}
           >
             <img
               src={product.image}
               alt={product.title}
-              className="w-full h-full object-contain cursor-pointer"
+              className="w-full h-64 sm:h-full object-contain cursor-pointer"
               onClick={handleImageClick}
               loading="lazy"
             />
           </div>
 
           {/* Informasi Produk */}
-          <form className="flex-auto p-8">
+          <form className="flex-auto p-4 sm:p-8">
             {/* Judul & Harga */}
             <div className="flex flex-wrap items-baseline">
-              <h1 className="w-full text-3xl font-bold mb-2 text-slate-900">
+              <h1 className="w-full text-2xl sm:text-3xl font-bold mb-2 text-slate-900">
                 {product.title}
               </h1>
               <div className="flex-auto text-lg font-semibold text-green-600">
@@ -124,19 +123,17 @@ const DetailProductPage = () => {
               </div>
             )}
 
-            <div className="flex space-x-4 mb-5 text-sm font-medium">
-              <div className="flex-auto flex space-x-4 pr-4">
-                <button
-                  className="flex-1 h-12 border border-gray-300 text-gray-700 rounded-lg shadow hover:bg-green-100 transition"
-                  type="button"
-                  onClick={handleAddToCart}
-                  disabled={product.stock <= 0}
-                >
-                  {product.stock > 0 ? "Add to Cart" : "Unavailable"}
-                </button>
-              </div>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-5 text-sm font-medium">
               <button
-                className="flex-none w-12 h-12 flex items-center justify-center text-gray-400 border border-gray-300 rounded-full shadow hover:text-red-500 hover:border-red-500 transition"
+                className="flex-1 h-12 border border-gray-300 text-gray-700 rounded-lg shadow hover:bg-green-100 transition"
+                type="button"
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+              >
+                {product.stock > 0 ? "Add to Cart" : "Unavailable"}
+              </button>
+              <button
+                className="flex-none w-full sm:w-12 h-12 flex items-center justify-center text-gray-400 border border-gray-300 rounded-lg shadow hover:text-red-500 hover:border-red-500 transition"
                 type="button"
                 aria-label="Like"
               >
@@ -164,13 +161,13 @@ const DetailProductPage = () => {
 
       {isZoomed && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 overflow-auto"
           onClick={handleImageClick}
         >
           <img
             src={product.image}
             alt={product.title}
-            className="max-w-4xl max-h-[90vh] object-contain rounded-lg shadow-lg"
+            className="max-w-full sm:max-w-4xl max-h-[90vh] object-contain rounded-lg shadow-lg"
           />
         </div>
       )}

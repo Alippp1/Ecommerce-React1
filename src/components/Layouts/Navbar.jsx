@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Button from "../Elements/Button";
 import { useLogin } from "../../hooks/useLogin";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 import { DarkMode } from "../../context/DarkMode";
 import { useTotalPrice } from "../../context/TotalPriceContext";
 
 const Navbar = () => {
   const username = useLogin(); // Mengambil username dari custom hook
   const [totalCart, setTotalCart] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State untuk hamburger menu
   const { isDarkMode, setIsDarkMode } = useContext(DarkMode);
   const { total } = useTotalPrice();
 
@@ -43,42 +43,114 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* Username */}
-        <div className="text-gray-800 text-sm font-semibold ml-20">
-          Hello, {username || "Guest"}
-        </div>
+        {/* Hamburger Menu Button */}
+        <button
+          type="button"
+          className="sm:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <span className="sr-only">Open menu</span>
+          <svg
+            className="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            {isMenuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            )}
+          </svg>
+        </button>
 
-        {/* Cart */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center bg-gray-100 p-2 rounded-md shadow-md">
-            <Link to="/cart">
-              <span className="text-sm font-medium text-gray-700">
-                Cart: <span className="font-bold">{totalCart}</span> | Total:{" "}
-                <span className="font-bold"> ${total.toLocaleString("en-US")}</span>
-              </span>
-            </Link>
-          </div>
-
-          {/* Logout Button */}
+        {/* Menu untuk Desktop */}
+        <div className="hidden sm:flex items-center space-x-8">
+          <div className="text-gray-800 text-sm font-semibold">Hello, {username || "Guest"}</div>
+          <Link to="/cart" className="text-sm font-medium text-gray-700">
+            Cart: <span className="font-bold">{totalCart}</span> | Total:{" "}
+            <span className="font-bold">${total.toLocaleString("en-US")}</span>
+          </Link>
           <Button
             classname="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
             onClick={handleLogout}
           >
             Logout
           </Button>
-
           {/* Dark Mode Toggle */}
           <label className="flex items-center cursor-pointer">
-            <input type="checkbox" className="hidden" checked={isDarkMode} onChange={() => setIsDarkMode(!isDarkMode)}/>
-            <div className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition ${ isDarkMode ? "bg-blue-600" : "bg-gray-300" }`} >
-              <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${  isDarkMode ? "translate-x-5" : "" }`}></div>
+            <input
+              type="checkbox"
+              className="hidden"
+              checked={isDarkMode}
+              onChange={() => setIsDarkMode(!isDarkMode)}
+            />
+            <div
+              className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition ${
+                isDarkMode ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${
+                  isDarkMode ? "translate-x-5" : ""
+                }`}
+              ></div>
             </div>
-            <span className="ml-2 text-sm">
-              {isDarkMode ? "Dark" : "Light"}
-            </span>
+            <span className="ml-2 text-sm">{isDarkMode ? "Dark" : "Light"}</span>
           </label>
         </div>
       </nav>
+
+      {/* Menu untuk Mobile */}
+      <div className={`${isMenuOpen ? "block" : "hidden"} sm:hidden bg-gray-100 shadow-md`}>
+        <div className="px-6 py-4 space-y-2">
+          <Link to="/products" className="block text-gray-700 font-medium">
+            Home
+          </Link>
+          <Link to="/cart" className="block text-gray-700 font-medium">
+            Cart
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="block text-left w-full text-red-600 font-medium"
+          >
+            Logout
+          </button>
+          {/* Dark Mode Toggle */}
+          <label className="flex items-center cursor-pointer mt-2">
+            <input
+              type="checkbox"
+              className="hidden"
+              checked={isDarkMode}
+              onChange={() => setIsDarkMode(!isDarkMode)}
+            />
+            <div
+              className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition ${
+                isDarkMode ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${
+                  isDarkMode ? "translate-x-5" : ""
+                }`}
+              ></div>
+            </div>
+            <span className="ml-2 text-sm">{isDarkMode ? "Dark" : "Light"}</span>
+          </label>
+        </div>
+      </div>
     </div>
   );
 };
